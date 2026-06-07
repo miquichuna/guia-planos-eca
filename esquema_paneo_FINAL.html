@@ -1,0 +1,301 @@
+
+<style>
+  @keyframes pan-sweep-pf {
+    0%   { transform: rotate(-38deg); }
+    100% { transform: rotate(32deg); }
+  }
+  @keyframes arc-draw-pf {
+    0%   { stroke-dashoffset: 200; opacity: 0.15; }
+    100% { stroke-dashoffset: 0;   opacity: 1; }
+  }
+  @keyframes arrow-end-pf {
+    0%,80% { opacity: 0; }
+    100%   { opacity: 1; }
+  }
+  .cam-pivot-pf { transform-origin: 310px 286px; }
+  .cam-pivot-pf.go { animation: pan-sweep-pf 2.8s ease-in-out forwards; }
+  .arc-path-pf { stroke-dasharray: 200; stroke-dashoffset: 200; }
+  .arc-path-pf.go { animation: arc-draw-pf 2.8s ease-in-out forwards; }
+  .v-end-pf { opacity: 0; }
+  .v-end-pf.go { animation: arrow-end-pf 2.8s ease-in-out forwards; }
+  .lbl-arc-pf { opacity: 0; transition: opacity 0.5s; }
+
+  .vista-panel-pf { display: none; }
+  .vista-panel-pf.active { display: block; }
+
+  .toggle-bar-pf {
+    display: flex;
+    border: 1.5px solid #FCC839;
+    border-radius: 8px;
+    overflow: hidden;
+    width: fit-content;
+    margin: 6px auto 4px;
+  }
+  .toggle-bar-pf button {
+    padding: 9px 22px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    transition: background 0.2s, color 0.2s;
+  }
+  .toggle-bar-pf button.sel { background: #FCC839; color: #0B0C0F; }
+  .toggle-bar-pf button:not(.sel):hover { background: rgba(252,200,57,0.1); }
+
+  #btn-play-pf {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px auto 0;
+    padding: 9px 22px;
+    border: 1.5px solid #FCC839;
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    transition: background 0.2s;
+  }
+  #btn-play-pf:hover { background: rgba(252,200,57,0.12); }
+  #btn-play-pf:active { transform: scale(0.97); }
+
+  #subtitulo-vista {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    text-align: center;
+    margin: 2px 0 0;
+    opacity: 0.8;
+  }
+</style>
+
+<h2 class="sr-only">Esquema del paneo en dos vistas: desde arriba y de frente.</h2>
+
+<!-- TÍTULO PRINCIPAL -->
+<p style="text-align:center; font-size:18px; font-weight:500; margin: 0 0 2px; color:var(--color-text-primary);">Paneo</p>
+<p id="subtitulo-vista" >Pasillo · vista desde arriba</p>
+
+<!-- BOTONES -->
+<div class="toggle-bar-pf">
+  <button id="btn-top-pf" class="sel" onclick="showVistaPF('top')">
+    <i class="ti ti-eye" aria-hidden="true" style="font-size:14px; margin-right:5px;"></i>Vista desde arriba
+  </button>
+  <button id="btn-front-pf" onclick="showVistaPF('front')">
+    <i class="ti ti-camera" aria-hidden="true" style="font-size:14px; margin-right:5px;"></i>Vista de frente
+  </button>
+</div>
+
+<!-- ══ VISTA CENITAL ══ -->
+<div id="panel-top-pf" class="vista-panel-pf active">
+<svg width="100%" viewBox="0 0 680 430" role="img">
+  <title>Paneo — vista desde arriba</title>
+  <desc>Vista cenital del pasillo. La cámara gira desde la puerta hasta Matías.</desc>
+  <defs>
+    <marker id="aTp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="aYp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#FCC839" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <rect x="60" y="30" width="560" height="13" rx="3" fill="var(--color-text-secondary)" opacity="0.18"/>
+  <rect x="60" y="355" width="560" height="13" rx="3" fill="var(--color-text-secondary)" opacity="0.18"/>
+  <rect x="60" y="43" width="560" height="312" fill="var(--color-background-secondary)" opacity="0.55"/>
+  <line x1="60" y1="199" x2="620" y2="199" stroke="var(--color-border-tertiary)" stroke-width="1" stroke-dasharray="10 6"/>
+
+  <text x="76" y="28"  style="font-size:11px; fill:var(--color-text-secondary); opacity:0.55;">pared</text>
+  <text x="76" y="383" style="font-size:11px; fill:var(--color-text-secondary); opacity:0.55;">pared</text>
+
+  <!-- Puerta -->
+  <rect x="88" y="25" width="50" height="18" rx="2"
+        fill="#14B4EB" fill-opacity="0.35" stroke="#14B4EB" stroke-width="1.5"/>
+  <path d="M 88 43 Q 88 94 138 43"
+        fill="#14B4EB" fill-opacity="0.1"
+        stroke="#14B4EB" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="113" y="110" text-anchor="middle" style="font-size:12px; font-weight:500; fill:#185FA5;">puerta</text>
+  <text x="113" y="124" text-anchor="middle" style="font-size:11px; fill:#185FA5; opacity:0.8;">(punto de partida)</text>
+
+  <!-- Matías -->
+  <circle cx="508" cy="199" r="25" fill="#FCC839" fill-opacity="0.2" stroke="#FCC839" stroke-width="2.5"/>
+  <circle cx="508" cy="185" r="9"  fill="#FCC839" fill-opacity="0.45" stroke="#FCC839" stroke-width="1.5"/>
+  <ellipse cx="508" cy="207" rx="11" ry="7" fill="#FCC839" fill-opacity="0.35" stroke="#FCC839" stroke-width="1.5"/>
+  <text x="508" y="242" text-anchor="middle" style="font-size:12px; font-weight:500; fill:#BA7517;">Matías</text>
+
+  <!-- Cámara -->
+  <g id="cam-pf" class="cam-pivot-pf">
+    <rect x="284" y="252" width="52" height="34" rx="6"
+          fill="#14B4EB" fill-opacity="0.18" stroke="#14B4EB" stroke-width="2.5"/>
+    <polygon points="299,252 321,252 317,232 303,232"
+             fill="#14B4EB" fill-opacity="0.3" stroke="#14B4EB" stroke-width="1.5"/>
+    <circle cx="310" cy="264" r="4"
+            fill="#14B4EB" stroke="var(--color-background-primary)" stroke-width="1.5"/>
+  </g>
+  <text x="310" y="302" text-anchor="middle" style="font-size:12px; font-weight:500; fill:#185FA5;">cámara</text>
+  <text x="310" y="316" text-anchor="middle" style="font-size:11px; fill:#185FA5; opacity:0.8;">(no se mueve de sitio)</text>
+
+  <line id="v-start-pf" x1="310" y1="232" x2="132" y2="133"
+        stroke="#14B4EB" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.65"
+        marker-end="url(#aTp)" style="transition: opacity 0.8s;"/>
+
+  <path id="arc-pf" class="arc-path-pf"
+        d="M 150 140 A 172 172 0 0 1 490 140"
+        fill="none" stroke="#FCC839" stroke-width="2.5" stroke-linecap="round"
+        marker-end="url(#aYp)"/>
+
+  <line id="v-end-pf" class="v-end-pf"
+        x1="310" y1="232" x2="483" y2="202"
+        stroke="#14B4EB" stroke-width="2" stroke-dasharray="6 4"
+        marker-end="url(#aTp)"/>
+
+  <text id="lbl-arc-pf" class="lbl-arc-pf"
+        x="340" y="128" text-anchor="middle"
+        style="font-size:12px; font-weight:500; fill:#BA7517;">gira de izquierda a derecha</text>
+</svg>
+
+<div style="text-align:center;">
+  <button id="btn-play-pf" onclick="playPF()">
+    <i class="ti ti-player-play" aria-hidden="true" style="font-size:15px; color:#FCC839;"></i>
+    Ver el paneo
+  </button>
+</div>
+</div>
+
+<!-- ══ VISTA FRONTAL ══ -->
+<div id="panel-front-pf" class="vista-panel-pf">
+<svg width="100%" viewBox="0 0 680 430" role="img">
+  <title>Paneo — vista de frente</title>
+  <desc>Vista frontal. Cámara sobre trípode en primer plano vista por detrás, puerta al fondo izquierda, Matías de pie al fondo derecha.</desc>
+  <defs>
+    <marker id="aFp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- Fondo y suelo -->
+  <rect x="40" y="40" width="600" height="290" fill="var(--color-background-secondary)" opacity="0.28"/>
+  <rect x="40" y="330" width="600" height="70" rx="4" fill="var(--color-background-secondary)" opacity="0.55"/>
+  <line x1="40" y1="330" x2="640" y2="330" stroke="var(--color-text-secondary)" stroke-width="1.5" stroke-dasharray="8 4" opacity="0.28"/>
+
+  <!-- Perspectiva -->
+  <line x1="340" y1="130" x2="40"  y2="330" stroke="var(--color-border-tertiary)" stroke-width="0.5" stroke-dasharray="6 4"/>
+  <line x1="340" y1="130" x2="640" y2="330" stroke="var(--color-border-tertiary)" stroke-width="0.5" stroke-dasharray="6 4"/>
+
+  <!-- PUERTA izquierda -->
+  <rect x="88" y="165" width="78" height="130" rx="4"
+        fill="#14B4EB" fill-opacity="0.15" stroke="#14B4EB" stroke-width="2"/>
+  <rect x="94" y="171" width="66" height="118" rx="2"
+        fill="none" stroke="#14B4EB" stroke-width="0.8" stroke-dasharray="3 2" opacity="0.6"/>
+  <circle cx="152" cy="235" r="4" fill="#14B4EB" fill-opacity="0.6" stroke="#14B4EB" stroke-width="1"/>
+  <text x="127" y="312" text-anchor="middle" style="font-size:12px; font-weight:500; fill:#185FA5;">puerta</text>
+  <text x="127" y="326" text-anchor="middle" style="font-size:11px; fill:#185FA5; opacity:0.8;">(punto de partida)</text>
+
+  <!-- MATÍAS derecha -->
+  <line x1="513" y1="285" x2="505" y2="325" stroke="#BA7517" stroke-width="3" stroke-linecap="round"/>
+  <line x1="527" y1="285" x2="535" y2="325" stroke="#BA7517" stroke-width="3" stroke-linecap="round"/>
+  <rect x="503" y="230" width="34" height="58" rx="8"
+        fill="#FCC839" fill-opacity="0.3" stroke="#FCC839" stroke-width="2"/>
+  <circle cx="520" cy="212" r="18"
+          fill="#FCC839" fill-opacity="0.35" stroke="#FCC839" stroke-width="2"/>
+  <line x1="503" y1="248" x2="482" y2="272" stroke="#BA7517" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="537" y1="248" x2="558" y2="272" stroke="#BA7517" stroke-width="2.5" stroke-linecap="round"/>
+  <text x="520" y="348" text-anchor="middle" style="font-size:12px; font-weight:500; fill:#BA7517;">Matías</text>
+  <text x="520" y="362" text-anchor="middle" style="font-size:11px; fill:#BA7517; opacity:0.8;">(al fondo, derecha)</text>
+
+  <!-- TRÍPODE -->
+  <line x1="300" y1="300" x2="258" y2="380" stroke="var(--color-text-secondary)" stroke-width="3" stroke-linecap="round" opacity="0.55"/>
+  <line x1="380" y1="300" x2="422" y2="380" stroke="var(--color-text-secondary)" stroke-width="3" stroke-linecap="round" opacity="0.55"/>
+  <line x1="340" y1="300" x2="340" y2="385" stroke="var(--color-text-secondary)" stroke-width="3" stroke-linecap="round" opacity="0.55"/>
+  <rect x="290" y="284" width="100" height="16" rx="4"
+        fill="var(--color-text-secondary)" fill-opacity="0.18"
+        stroke="var(--color-text-secondary)" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- CÁMARA vista por detrás:
+       el equipo está detrás → ven la parte trasera, no el objetivo.
+       Cuerpo grande, visor arriba a la derecha, pantalla abatible izquierda,
+       sin objetivo visible (apunta hacia el fondo) -->
+  <!-- Cuerpo principal -->
+  <rect x="302" y="228" width="76" height="56" rx="7"
+        fill="#14B4EB" fill-opacity="0.18" stroke="#14B4EB" stroke-width="2.5"/>
+  <!-- Pantalla abatible (izquierda) -->
+  <rect x="278" y="238" width="26" height="32" rx="4"
+        fill="#14B4EB" fill-opacity="0.12" stroke="#14B4EB" stroke-width="1.5" stroke-dasharray="3 2"/>
+  <!-- Visor (arriba derecha) -->
+  <rect x="354" y="230" width="22" height="14" rx="3"
+        fill="#14B4EB" fill-opacity="0.3" stroke="#14B4EB" stroke-width="1"/>
+  <!-- Botón de grabación (círculo rojo pequeño) -->
+  <circle cx="365" cy="248" r="5"
+          fill="#E24B4A" fill-opacity="0.7" stroke="#E24B4A" stroke-width="1"/>
+  <!-- Zapata portaaccesorios (arriba, centro) -->
+  <rect x="322" y="222" width="36" height="8" rx="2"
+        fill="#14B4EB" fill-opacity="0.25" stroke="#14B4EB" stroke-width="1"/>
+
+  <!-- Etiqueta cámara -->
+  <text x="340" y="210" text-anchor="middle"
+        style="font-size:12px; font-weight:500; fill:#185FA5;">cámara</text>
+  <text x="340" y="222" text-anchor="middle"
+        style="font-size:10px; fill:#185FA5; opacity:0.7;">(vista por detrás)</text>
+
+  <!-- FLECHA ÚNICA izquierda → derecha sobre la cámara -->
+  <path d="M 225 205 Q 340 168 455 205"
+        fill="none" stroke="#FCC839" stroke-width="2.5" stroke-linecap="round"
+        marker-end="url(#aFp)"/>
+  <text x="340" y="158" text-anchor="middle"
+        style="font-size:12px; font-weight:500; fill:#BA7517;">la cámara gira →</text>
+
+  <!-- Nota inferior -->
+  <text x="340" y="412" text-anchor="middle"
+        style="font-size:11px; fill:var(--color-text-secondary); opacity:0.65;">vosotros estáis aquí, detrás de la cámara</text>
+</svg>
+</div>
+
+<script>
+  var playedPF = false;
+
+  function showVistaPF(v) {
+    document.getElementById('panel-top-pf').classList.toggle('active', v === 'top');
+    document.getElementById('panel-front-pf').classList.toggle('active', v === 'front');
+    document.getElementById('btn-top-pf').classList.toggle('sel', v === 'top');
+    document.getElementById('btn-front-pf').classList.toggle('sel', v === 'front');
+    document.getElementById('subtitulo-vista').textContent =
+      v === 'top' ? 'Pasillo · vista desde arriba' : 'Pasillo · vista de frente';
+  }
+
+  function playPF() {
+    var btn  = document.getElementById('btn-play-pf');
+    var cam  = document.getElementById('cam-pf');
+    var arc  = document.getElementById('arc-pf');
+    var vend = document.getElementById('v-end-pf');
+    var lbl  = document.getElementById('lbl-arc-pf');
+    var vst  = document.getElementById('v-start-pf');
+
+    if (playedPF) {
+      cam.classList.remove('go');
+      arc.classList.remove('go');
+      vend.classList.remove('go');
+      void cam.offsetWidth;
+      arc.style.strokeDashoffset = '200';
+      arc.style.opacity = '';
+      vend.style.opacity = '0';
+      lbl.style.opacity = '0';
+      vst.style.opacity = '0.65';
+      btn.innerHTML = '<i class="ti ti-player-play" aria-hidden="true" style="font-size:15px; color:#FCC839;"></i> Ver el paneo';
+      playedPF = false;
+      return;
+    }
+
+    playedPF = true;
+    btn.innerHTML = '<i class="ti ti-refresh" aria-hidden="true" style="font-size:15px; color:#FCC839;"></i> Repetir';
+
+    setTimeout(function() {
+      vst.style.opacity = '0.08';
+      cam.classList.add('go');
+      arc.classList.add('go');
+      vend.classList.add('go');
+    }, 900);
+
+    setTimeout(function() { lbl.style.opacity = '1'; }, 3000);
+  }
+</script>
